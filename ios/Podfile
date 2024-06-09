@@ -22,6 +22,7 @@ target 'TransactionHistoryModule' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+  pod 'PasscodeAuth', :path => '../node_modules/@el173/react-native-passcode-auth'
 
   target 'TransactionHistoryModuleTests' do
     inherit! :complete

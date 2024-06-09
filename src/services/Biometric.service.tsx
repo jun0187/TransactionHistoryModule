@@ -1,8 +1,7 @@
 import TouchID from "react-native-touch-id";
-import { BIOMETRIC_TYPE } from "../constant";
-import { setBiometricType } from "../reducer/Login.reducer";
-import { useDispatch } from "react-redux";
 import { Alert } from "react-native";
+// @ts-ignore
+import PasscodeAuth from "@el173/react-native-passcode-auth";
 
 export const optionalConfigObject = {
   title: "Authentication Required", // Android
@@ -32,8 +31,26 @@ export const authenticateBiometric = async () => {
     .then((success: any) => {
       return success;
     })
+    .catch(async (error: any) => {
+      if (error.name === "LAErrorUserFallback") {
+        return await passCodeAuth();
+      }
+      if (error.name !== "LAErrorUserCancel") {
+        Alert.alert("Biometric Error: ", error.message);
+      }
+      return false;
+    });
+};
+
+export const passCodeAuth = async () => {
+  return await PasscodeAuth.authenticate("PassCode Auth")
+    .then((success: any) => {
+      return success;
+    })
     .catch((error: any) => {
-      Alert.alert("Error::", error);
+      if (error.message !== "LAErrorUserCancel") {
+        Alert.alert("PassCode Error: ", error.message);
+      }
       return false;
     });
 };
